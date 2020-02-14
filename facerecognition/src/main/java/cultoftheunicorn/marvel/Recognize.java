@@ -3,11 +3,11 @@ package cultoftheunicorn.marvel;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -188,7 +188,10 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
                         strBuilder.append(uniqueNamesArray[i] + "\n");
                     }
                     String textToDisplay = strBuilder.toString();
-                    results.setText(textToDisplay);
+                    results.setText(tempName);
+                    scan.setChecked(false);
+                } else {
+                    results.setText("Unknown from Recognize");
                 }
             }
         };

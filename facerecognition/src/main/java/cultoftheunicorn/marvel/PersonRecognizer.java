@@ -1,24 +1,25 @@
 package cultoftheunicorn.marvel;
 
-import static  com.googlecode.javacv.cpp.opencv_highgui.*;
-import static  com.googlecode.javacv.cpp.opencv_core.*;
+import android.graphics.Bitmap;
+import android.util.Log;
 
-import static  com.googlecode.javacv.cpp.opencv_imgproc.*;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
+import com.googlecode.javacv.cpp.opencv_contrib.FaceRecognizer;
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
+import com.googlecode.javacv.cpp.opencv_core.MatVector;
+import com.googlecode.javacv.cpp.opencv_imgproc;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
-import com.googlecode.javacv.cpp.opencv_imgproc;
-import com.googlecode.javacv.cpp.opencv_contrib.FaceRecognizer;
-import com.googlecode.javacv.cpp.opencv_core.IplImage;
-import com.googlecode.javacv.cpp.opencv_core.MatVector;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.util.Locale;
 
-import android.graphics.Bitmap;
-import android.util.Log;
+import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_8U;
+import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImage;
+import static com.googlecode.javacv.cpp.opencv_imgproc.CV_BGR2GRAY;
+import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
 
 public  class PersonRecognizer {
 
@@ -28,7 +29,7 @@ public  class PersonRecognizer {
 	Labels labelsFile;
 
 	static  final int WIDTH= 128;
-	static  final int HEIGHT= 128;;
+	static final int HEIGHT = 128;
 	private int mProb=999;
 
 
@@ -69,7 +70,7 @@ public  class PersonRecognizer {
 			public boolean accept(File dir, String name) {
 				return name.toLowerCase().endsWith(".jpg");
 
-			};
+			}
 		};
 
 		File[] imageFiles = root.listFiles(pngFilter);
@@ -126,18 +127,15 @@ public  class PersonRecognizer {
 
 	public boolean canPredict()
 	{
-		if (labelsFile.max()>1)
-			return true;
-		else
-			return false;
+		return labelsFile.max() > 1;
 
 	}
 
 	public String predict(Mat m) {
 		if (!canPredict())
-			return "";
-		int n[] = new int[1];
-		double p[] = new double[1];
+			return "PR Can't Predict";
+		int[] n = new int[1];
+		double[] p = new double[1];
 		IplImage ipl = MatToIplImage(m,WIDTH, HEIGHT);
 //		IplImage ipl = MatToIplImage(m,-1, -1);
 
@@ -147,9 +145,9 @@ public  class PersonRecognizer {
 			mProb=(int)p[0];
 		else
 			mProb=-1;
-		//	if ((n[0] != -1)&&(p[0]<95))
-		if (n[0] != -1)
-			return labelsFile.get(n[0]);
+		if ((n[0] != -1) && (p[0] < 26))
+			//if (n[0] != -1)
+			return String.format(Locale.getDefault(), "Label:%s, confidence: %d)", labelsFile.get(n[0]), mProb);
 		else
 			return "Unknown";
 	}
