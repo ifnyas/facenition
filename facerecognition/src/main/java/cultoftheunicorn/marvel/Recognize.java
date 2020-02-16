@@ -39,6 +39,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -212,11 +215,12 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
                     String textToDisplay = strBuilder.toString();
                     results.setText(tempName);
                     scan.setChecked(false);
+                    showLoc(1);
                 } else {
                     results.setText("Face not registered");
+                    showLoc(2);
                     scan.setChecked(false);
                 }
-                showLoc();
             }
         };
 
@@ -263,11 +267,20 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
 //        });
     }
 
-    private void showLoc() {
+    private void showLoc(int status) {
 
         loc = getIntent().getStringExtra("loc");
         final TextView locText = (TextView) findViewById(R.id.location);
-        locText.setText(loc);
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        String dateformatted = dateFormat.format(date);
+
+        if (status == 1) {
+            locText.setText("Attendance Success!\n" + loc + "\nTime: " + dateformatted);
+        } else {
+            locText.setText("Attendance Failed");
+        }
     }
 
     private void showSecButton() {
