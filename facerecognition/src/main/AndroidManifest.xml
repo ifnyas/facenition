@@ -5,8 +5,6 @@
     android:versionCode="24"
     android:versionName="2.4">
 
-    <uses-sdk android:minSdkVersion="9" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <supports-screens
@@ -35,32 +33,38 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:icon="@drawable/lightbulb"
-        android:label="@string/app_name"
+        android:icon="@drawable/logo"
+        android:label="PNM Digi Demo"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name="cultoftheunicorn.marvel.MainActivity"
-            android:label="Marvel">
+            android:name="cultoftheunicorn.marvel.Splash"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="cultoftheunicorn.marvel.MainActivity"></activity>
+
         <activity
             android:name="cultoftheunicorn.marvel.Recognize"
-            android:screenOrientation="landscape" />
+            android:theme="@style/SplashTheme" />
+
         <activity
             android:name="cultoftheunicorn.marvel.Training"
-            android:label="Training"
-            android:screenOrientation="landscape" />
+            android:theme="@style/SplashTheme" />
+
         <activity
             android:name="cultoftheunicorn.marvel.NameActivity"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name="cultoftheunicorn.marvel.ReviewResults"
-            android:label="Review and Mark"/>
 
-        <!--android:screenOrientation="portrait"-->
+        <activity
+            android:name="cultoftheunicorn.marvel.ReviewResults"
+            android:label="Review and Mark" />
     </application>
 
 </manifest>

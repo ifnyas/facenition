@@ -8,11 +8,14 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -25,10 +28,12 @@ import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.cultoftheunicorn.marvel.R;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
@@ -161,9 +166,20 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
 
         scan = (ToggleButton) findViewById(R.id.scan);
         final TextView results = (TextView) findViewById(R.id.results);
+        final ProgressBar loading = (ProgressBar) findViewById(R.id.loadingBar);
+
+        ImageButton backButton = (ImageButton) findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Recognize.this, MainActivity.class));
+                finish();
+            }
+        });
 
         mOpenCvCameraView = (Tutorial3View) findViewById(R.id.tutorial3_activity_java_surface_view);
         mOpenCvCameraView.setCvCameraViewListener(this);
+        mOpenCvCameraView.setCamFront();
 
         //mPath=getFilesDir()+"/facerecogOCV/";
         mPath = Environment.getExternalStorageDirectory()+"/facerecogOCV/";
@@ -191,10 +207,16 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
                     results.setText(tempName);
                     scan.setChecked(false);
                 } else {
-                    results.setText("Unknown from Recognize");
+                    results.setText("Face not registered");
+                    scan.setChecked(false);
+                    showSecButton();
                 }
+                loading.setVisibility(View.GONE);
             }
         };
+
+        scan.setChecked(true);
+        faceState = SEARCHING;
 
         scan.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -219,21 +241,52 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
             Log.e("Error","Error creating directory");
         }
 
-        Button submit = (Button) findViewById(R.id.submit);
-        submit.setOnClickListener(new View.OnClickListener() {
+//        Button submit = (Button) findViewById(R.id.submit);
+//        submit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(uniqueNames.size() > 0) {
+//                    Intent intent = new Intent(Recognize.this, ReviewResults.class);
+//                    intent.putExtra("list", uniqueNamesArray);
+//                    startActivity(intent);
+//                }
+//                else {
+//                    Toast.makeText(Recognize.this, "Empty list cannot be sent further", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
+    }
+
+    private void showSecButton() {
+
+        CardView rescanCard = (CardView) findViewById(R.id.rescanCard);
+        Button rescanButton = (Button) findViewById(R.id.rescan);
+        Button registerButton = (Button) findViewById(R.id.registerButton);
+        CardView registerCard = (CardView) findViewById(R.id.registerCard);
+        final ProgressBar loading = (ProgressBar) findViewById(R.id.loadingBar);
+
+
+        rescanCard.setVisibility(View.VISIBLE);
+        rescanButton.setVisibility(View.VISIBLE);
+
+        registerCard.setVisibility(View.VISIBLE);
+        registerButton.setVisibility(View.VISIBLE);
+
+        rescanButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if(uniqueNames.size() > 0) {
-                    Intent intent = new Intent(Recognize.this, ReviewResults.class);
-                    intent.putExtra("list", uniqueNamesArray);
-                    startActivity(intent);
-                }
-                else {
-                    Toast.makeText(Recognize.this, "Empty list cannot be sent further", Toast.LENGTH_LONG).show();
-                }
+            public void onClick(View view) {
+                scan.setChecked(true);
+                faceState = SEARCHING;
+                loading.setVisibility(View.VISIBLE);
             }
         });
 
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Recognize.this, NameActivity.class));
+            }
+        });
     }
 
     @Override
@@ -253,6 +306,7 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
 
+
         if (mAbsoluteFaceSize == 0) {
             int height = mGray.rows();
             if (Math.round(height * mRelativeFaceSize) > 0) {
@@ -262,10 +316,17 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
         }
 
         MatOfRect faces = new MatOfRect();
+        Core.flip(mRgba.t(), mRgba, -1);
+        Core.flip(mGray.t(), mGray, -1);
+
+        Mat rotImage = Imgproc.getRotationMatrix2D(new Point(mRgba.cols() / 2,
+                mRgba.rows() / 2), 0, 1.0);
+        Imgproc.warpAffine(mRgba, mRgba, rotImage, mRgba.size());
+        Imgproc.warpAffine(mGray, mGray, rotImage, mRgba.size());
 
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaDetector != null)
-                mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2,
                         new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         }
         else if (mDetectorType == NATIVE_DETECTOR) {
@@ -280,7 +341,7 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
 
         if ((facesArray.length>0) && (faceState==SEARCHING))
         {
-            Mat m=new Mat();
+            Mat m = new Mat();
             m=mGray.submat(facesArray[0]);
             mBitmap = Bitmap.createBitmap(m.width(),m.height(), Bitmap.Config.ARGB_8888);
 
@@ -296,8 +357,8 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
             msg = new Message();
             msg.obj = textTochange;
             mHandler.sendMessage(msg);
-
         }
+
         for (int i = 0; i < facesArray.length; i++)
             Core.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
 
@@ -323,7 +384,13 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
         mOpenCvCameraView.disableView();
     }
 
-//    because capitalize is the new black
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(Recognize.this, MainActivity.class));
+        super.onBackPressed(); // optional depending on your needs
+    }
+
+    //    because capitalize is the new black
     private String capitalize(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }

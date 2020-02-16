@@ -1,16 +1,22 @@
 package cultoftheunicorn.marvel;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -22,10 +28,12 @@ import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.cultoftheunicorn.marvel.R;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
@@ -151,12 +159,14 @@ public class Training extends AppCompatActivity implements CameraBridgeViewBase.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
 
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
-
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Training");
-        }*/
+        ImageButton backButton = (ImageButton) findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Training.this, MainActivity.class));
+                finish();
+            }
+        });
 
         text = getIntent().getStringExtra("name");
         Iv = (ImageView) findViewById(R.id.imagePreview);
@@ -169,8 +179,20 @@ public class Training extends AppCompatActivity implements CameraBridgeViewBase.
             }
         });
 
+        capture.setChecked(true);
+
         mOpenCvCameraView = (Tutorial3View) findViewById(R.id.tutorial3_activity_java_surface_view);
         mOpenCvCameraView.setCvCameraViewListener(this);
+
+        mOpenCvCameraView.setCamFront();
+//        mOpenCvCameraView.setMaxFrameSize(
+//                getResources().getDisplayMetrics().heightPixels,
+//                getResources().getDisplayMetrics().widthPixels);
+
+//        mOpenCvCameraView.setResolution(
+//                getResources().getDisplayMetrics().heightPixels,
+//                getResources().getDisplayMetrics().widthPixels
+//        );
 
         //mPath=getFilesDir()+"/facerecogOCV/";
         mPath = Environment.getExternalStorageDirectory()+"/facerecogOCV/";
@@ -208,10 +230,37 @@ public class Training extends AppCompatActivity implements CameraBridgeViewBase.
         if (capture.isChecked())
             faceState = TRAINING;
         else {
-            Toast.makeText(this, "Captured", Toast.LENGTH_SHORT).show();
-            countImages=0;
-            faceState=IDLE;
-            Iv.setImageResource(R.drawable.user_image);
+            final ProgressBar loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+            loadingBar.setVisibility(View.INVISIBLE);
+
+            final TextView label = (TextView) findViewById(R.id.label);
+            label.setText("Is it you?");
+            countImages = 0;
+            faceState = IDLE;
+
+            final Button yesButton = (Button) findViewById(R.id.yes);
+            yesButton.setVisibility(View.VISIBLE);
+            yesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(Training.this, "Your face has been saved", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(Training.this, MainActivity.class));
+                    finish();
+                }
+            });
+
+            final Button noButton = (Button) findViewById(R.id.no);
+            noButton.setVisibility(View.VISIBLE);
+            noButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    yesButton.setVisibility(View.INVISIBLE);
+                    noButton.setVisibility(View.INVISIBLE);
+                    loadingBar.setVisibility(View.VISIBLE);
+                    label.setText("Scanning...");
+                    capture.setChecked(true);
+                }
+            });
         }
     }
 
@@ -242,10 +291,17 @@ public class Training extends AppCompatActivity implements CameraBridgeViewBase.
         }
 
         MatOfRect faces = new MatOfRect();
+        Core.flip(mRgba.t(), mRgba, -1);
+        Core.flip(mGray.t(), mGray, -1);
+
+        Mat rotImage = Imgproc.getRotationMatrix2D(new Point(mRgba.cols() / 2,
+                mRgba.rows() / 2), 0, 1.0);
+        Imgproc.warpAffine(mRgba, mRgba, rotImage, mRgba.size());
+        Imgproc.warpAffine(mGray, mGray, rotImage, mRgba.size());
 
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaDetector != null)
-                mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2,
                         new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         }
         else if (mDetectorType == NATIVE_DETECTOR) {
@@ -286,6 +342,12 @@ public class Training extends AppCompatActivity implements CameraBridgeViewBase.
         for (int i = 0; i < facesArray.length; i++)
             Core.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
 
+//        Mat mRgbaT = mRgba.t();
+//        Core.flip(mRgba.t(), mRgbaT, 1);
+//        Imgproc.resize(mRgbaT, mRgbaT, mRgba.size());
+        //mRgbaT.release();
+//        return mRgbaT;
+
         return mRgba;
     }
 
@@ -306,5 +368,11 @@ public class Training extends AppCompatActivity implements CameraBridgeViewBase.
     protected void onDestroy() {
         super.onDestroy();
         mOpenCvCameraView.disableView();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(Training.this, MainActivity.class));
+        super.onBackPressed(); // optional depending on your needs
     }
 }

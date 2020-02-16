@@ -4,9 +4,18 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:windowFullscreen">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="CameraTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/black</item>
+    </style>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/white</item>
     </style>
 
 </resources>

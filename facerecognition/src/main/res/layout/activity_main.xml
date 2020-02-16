@@ -1,44 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.opencv.cultoftheunicorn.marvel.cultoftheunicorn.marvel.MainActivity"
-    android:background="@android:color/white">
+    android:animateLayoutChanges="true"
+    android:background="#F1F1F1"
+    android:orientation="vertical">
 
-    <include android:id="@+id/app_bar" layout="@layout/home_app_bar"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/resize"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_001_fingerprint"
+        android:tint="@color/black"
+        app:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#84FAFAFA"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/btm_bar"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/loadingBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/qrButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_002_qr"
+        android:tint="@color/grey"
+        android:visibility="invisible"
+        app:backgroundTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/btm_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.33"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/recognizeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_face_recognition"
+        android:tint="@color/colorAccent"
+        android:visibility="gone"
+        app:backgroundTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/btm_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
     <LinearLayout
+        android:id="@+id/btm_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/app_bar"
-        android:orientation="vertical">
+        android:layout_height="56dp"
+        android:background="#FAFAFA"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <Button
-            android:id="@+id/recognizeButton"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+        <ImageButton
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="@android:color/holo_green_light"
-            android:text="@string/recognize"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="35sp"/>
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_wallet" />
 
-        <Button
+        <ImageButton
             android:id="@+id/trainingButton"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="@android:color/holo_purple"
-            android:text="@string/training"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="35sp"/>
-
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_person_outline_black_24dp" />
     </LinearLayout>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

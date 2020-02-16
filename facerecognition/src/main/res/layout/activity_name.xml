@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:orientation="vertical">
 
-    <RelativeLayout
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context="org.opencv.cultoftheunicorn.marvel.cultoftheunicorn.marvel.NameActivity">
-
+    <ImageButton
+        android:id="@+id/backButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:src="@drawable/ic_left_white_24dp"
+        android:tint="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="64dp"
-            android:text="@string/who_are_you_going_to_train"
-            android:textSize="20sp"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:text="Register Account"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/lightBlack"/>
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/please_enter_the_same_name_for_the_same_person_everytime_you_train_that_person"
-            android:textSize="15sp"
+            android:paddingStart="40dp"
             android:textAlignment="center"
             android:gravity="center"
-            android:padding="15dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="40dp"
+            android:text="Please enter your name and click next button to scan your faces."
             android:layout_below="@+id/textView"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -40,29 +43,29 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView2"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="71dp"
+            android:layout_marginTop="80dp"
             android:layout_marginRight="40dp"
             android:layout_marginLeft="40dp"
             android:textAlignment="center"
             android:gravity="center"/>
 
-        <Button
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:alpha="0.33"
+        android:padding="80dp"
+        android:src="@drawable/logo" />
+
+    <Button
             android:id="@+id/nextButton"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:text="@string/next"
-            android:textSize="25sp"
+        android:layout_height="56dp"
+        android:background="@color/colorAccent"
+        android:text="NEXT"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/white"
-            android:background="@color/colorPrimary"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:textAllCaps="false" />
-
-    </RelativeLayout>
-
-</ScrollView>
+        android:textStyle="bold" />
+</LinearLayout>
 
 

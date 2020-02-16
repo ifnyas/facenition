@@ -145,7 +145,7 @@ public  class PersonRecognizer {
 			mProb=(int)p[0];
 		else
 			mProb=-1;
-		if ((n[0] != -1) && (p[0] < 26))
+        if ((n[0] != -1) && (p[0] < 50))
 			//if (n[0] != -1)
 			return String.format(Locale.getDefault(), "Label:%s, confidence: %d)", labelsFile.get(n[0]), mProb);
 		else

@@ -1,56 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:animateLayoutChanges="true"
+    android:background="@color/colorAccent">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <cultoftheunicorn.marvel.Tutorial3View
+        android:id="@+id/tutorial3_activity_java_surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/backButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:src="@drawable/ic_left_white_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:text="Register"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ToggleButton
+        android:id="@+id/capture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:checked="false"
+        android:textAllCaps="false"
+        android:textOff="@string/capture"
+        android:textOn="@string/capturing"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="org.opencv.cultoftheunicorn.marvel.cultoftheunicorn.marvel.Training">
+        android:layout_margin="16dp"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-            <cultoftheunicorn.marvel.Tutorial3View
-                android:id="@+id/tutorial3_activity_java_surface_view"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="65dp"
-                android:layout_marginStart="65dp"
-                android:layout_marginTop="35dp" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:animateLayoutChanges="true">
+
+            <ProgressBar
+                android:id="@+id/loadingBar"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toTopOf="@id/label"
+                app:layout_constraintDimensionRatio="W, 1:1"
+                app:layout_constraintEnd_toStartOf="@id/imagePreview"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:text="Scanning..."
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/imagePreview"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/loadingBar" />
 
             <ImageView
                 android:id="@+id/imagePreview"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_alignTop="@id/tutorial3_activity_java_surface_view"
-                android:layout_toRightOf="@id/tutorial3_activity_java_surface_view"
-                android:layout_toEndOf="@id/tutorial3_activity_java_surface_view"
-                android:layout_marginLeft="50dp"
-                android:layout_marginStart="50dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:contentDescription="@string/image_preview"
                 android:src="@drawable/user_image"
-                android:contentDescription="@string/image_preview" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="W, 1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.33" />
 
-            <ToggleButton
-                android:id="@+id/capture"
-                android:layout_width="100dp"
+            <Button
+                android:id="@+id/yes"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/tutorial3_activity_java_surface_view"
-                android:layout_alignRight="@+id/imagePreview"
-                android:layout_alignEnd="@+id/imagePreview"
-                android:layout_marginRight="23dp"
-                android:layout_marginEnd="23dp"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:textOff="@string/capture"
-                android:textOn="@string/capturing"
-                android:textAllCaps="false"/>
+                android:text="Yes"
+                android:textColor="@color/colorAccent"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toStartOf="@id/no"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/label" />
 
-    </RelativeLayout>
+            <Button
+                android:id="@+id/no"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="No"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toStartOf="@id/imagePreview"
+                app:layout_constraintStart_toEndOf="@id/yes"
+                app:layout_constraintTop_toTopOf="@id/yes" />
 
-</ScrollView>
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+</android.support.constraint.ConstraintLayout>
 

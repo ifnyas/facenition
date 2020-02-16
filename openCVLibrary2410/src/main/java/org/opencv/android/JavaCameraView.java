@@ -1,7 +1,5 @@
 package org.opencv.android;
 
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -17,6 +15,9 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+import java.lang.reflect.Method;
+import java.util.List;
+
 /**
  * This class is an implementation of the Bridge View between OpenCV and Java Camera.
  * This class relays on the functionality available in base class and only implements
@@ -31,7 +32,7 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
     private static final int MAGIC_TEXTURE_ID = 10;
     private static final String TAG = "JavaCameraView";
 
-    private byte mBuffer[];
+    private byte[] mBuffer;
     private Mat[] mFrameChain;
     private int mChainIdx = 0;
     private Thread mThread;
@@ -83,6 +84,7 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
                         Log.d(TAG, "Trying to open camera with new open(" + Integer.valueOf(camIdx) + ")");
                         try {
                             mCamera = Camera.open(camIdx);
+                            //Added
                             connected = true;
                         } catch (RuntimeException e) {
                             Log.e(TAG, "Camera #" + camIdx + "failed to open: " + e.getLocalizedMessage());
@@ -195,6 +197,12 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
 
                     /* Finally we are ready to start the preview */
                     Log.d(TAG, "startPreview");
+
+                    //yas codes
+                    setDisplayOrientation(mCamera, 90);
+                    mCamera.setPreviewDisplay(getHolder());
+//                    mCamera.setDisplayOrientation(90);
+
                     mCamera.startPreview();
                 }
                 else
@@ -206,6 +214,18 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
         }
 
         return result;
+    }
+
+    //yas codes
+    protected void setDisplayOrientation(Camera camera, int angle) {
+        Method downPolymorhpic;
+        try {
+            downPolymorhpic = camera.getClass().getMethod("setDisplayOrientation", int.class);
+            if (downPolymorhpic != null)
+                downPolymorhpic.invoke(camera, angle);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected void releaseCamera() {
@@ -308,7 +328,7 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
         private Mat mRgba;
         private int mWidth;
         private int mHeight;
-    };
+    }
 
     private class CameraWorker implements Runnable {
 

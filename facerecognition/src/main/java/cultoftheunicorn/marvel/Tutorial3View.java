@@ -1,10 +1,5 @@
 package cultoftheunicorn.marvel;
 
-import java.io.FileOutputStream;
-import java.util.List;
-
-import org.opencv.android.JavaCameraView;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,13 +9,17 @@ import android.hardware.Camera.Size;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import org.opencv.android.JavaCameraView;
+
+import java.io.FileOutputStream;
+import java.util.List;
+
 public class Tutorial3View extends JavaCameraView {
 
     private static final String TAG = "Sample::Tutorial3View";
 
     public Tutorial3View(Context context, AttributeSet attrs) {
         super(context, attrs);
-     
     }
 
     public List<String> getEffectList() {
@@ -62,31 +61,34 @@ public class Tutorial3View extends JavaCameraView {
 
     public void setAutofocus()
     {
-    	Camera.Parameters parameters = mCamera.getParameters();
-    	parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+        Camera.Parameters parameters = mCamera.getParameters();
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
 //    	 if (parameters.isVideoStabilizationSupported())
 //         {
 //      	   parameters.setVideoStabilization(true);
 //         }
-    	 mCamera.setParameters(parameters);
-
+        mCamera.setParameters(parameters);
     }
+
     public void setCamFront()
     {
-    	 disconnectCamera();
-    	 setCameraIndex(org.opencv.android.CameraBridgeViewBase.CAMERA_ID_FRONT );
-    	 connectCamera(getWidth(), getHeight());
+        disconnectCamera();
+        setCameraIndex(org.opencv.android.CameraBridgeViewBase.CAMERA_ID_FRONT);
+//        connectCamera(getWidth(), getHeight());
+        connectCamera(getHeight(), getWidth());
     }
+
+
     public void setCamBack()
     {
-    	 disconnectCamera();
-    	 setCameraIndex(org.opencv.android.CameraBridgeViewBase.CAMERA_ID_BACK );
-    	 connectCamera(getWidth(), getHeight());
+        disconnectCamera();
+        setCameraIndex(org.opencv.android.CameraBridgeViewBase.CAMERA_ID_BACK);
+        connectCamera(getWidth(), getHeight());
     }
 
     public int numberCameras()
     {
-     return	Camera.getNumberOfCameras();
+        return Camera.getNumberOfCameras();
     }
 
     public Size getResolution() {
