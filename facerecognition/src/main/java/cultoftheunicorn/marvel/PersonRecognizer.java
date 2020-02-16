@@ -127,15 +127,19 @@ public  class PersonRecognizer {
 	public boolean canPredict()
 	{
 		return labelsFile.max() > 1;
-
 	}
 
 	public String predict(Mat m) {
-		if (!canPredict())
-			return "PR Can't Predict";
+		if (labelsFile.max() == 0)
+			return "Please register sample faces first";
+
+		if (labelsFile.max() == 1) {
+			return "Face not Registered";
+		}
+
 		int[] n = new int[1];
 		double[] p = new double[1];
-		IplImage ipl = MatToIplImage(m,WIDTH, HEIGHT);
+		IplImage ipl = MatToIplImage(m, WIDTH, HEIGHT);
 //		IplImage ipl = MatToIplImage(m,-1, -1);
 
 		faceRecognizer.predict(ipl, n, p);
@@ -146,7 +150,7 @@ public  class PersonRecognizer {
 			mProb=-1;
         if ((n[0] != -1) && (p[0] < 50))
 			//if (n[0] != -1)
-//			return String.format(Locale.getDefault(), "Label:%s, confidence: %d)", labelsFile.get(n[0]), mProb);
+			//return String.format(Locale.getDefault(), "Label:%s, confidence: %d)", labelsFile.get(n[0]), mProb);
 			return labelsFile.get(n[0]);
 		else
 			return "Unknown";

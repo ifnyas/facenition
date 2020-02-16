@@ -17,7 +17,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -94,7 +93,13 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
     Labels labelsFile;
     static {
         OpenCVLoader.initDebug();
-        System.loadLibrary("opencv_java");
+        //System.load("C:\\Program Files\\My Great Program\\libs\\opencv_java.so");
+        String libPath = System.getProperty("java.library.path");
+        System.out.println("java.library.path=" + libPath);
+        String libraryName = "opencv_java";
+        System.out.println("Trying to load '" + libraryName + "'");
+        System.loadLibrary(libraryName);
+        //System.loadLibrary("opencv_java");
     }
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -210,9 +215,7 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
                 } else {
                     results.setText("Face not registered");
                     scan.setChecked(false);
-                    showSecButton();
                 }
-                loading.setVisibility(View.GONE);
                 showLoc();
             }
         };
@@ -226,13 +229,14 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
                 if(b) {
                     if(!fr.canPredict()) {
                         scan.setChecked(false);
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.SCanntoPredic), Toast.LENGTH_LONG).show();
                         return;
                     }
                     faceState = SEARCHING;
                 }
                 else {
                     faceState = IDLE;
+                    loading.setVisibility(View.GONE);
+                    showSecButton();
                 }
             }
         });

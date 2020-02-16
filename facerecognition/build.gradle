@@ -10,6 +10,9 @@ android {
         applicationId "cultoftheunicorn.marvel"
         minSdkVersion 19
         targetSdkVersion 22
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
     }
 
     buildTypes {

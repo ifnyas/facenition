@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         app:cardCornerRadius="16dp"
-        app:layout_constraintBottom_toTopOf="@id/rescanCard">
+        app:layout_constraintBottom_toTopOf="@id/registerCard">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -74,7 +74,8 @@
         android:id="@+id/rescanCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
         android:animateLayoutChanges="true"
         android:visibility="invisible"
         app:cardCornerRadius="16dp"
@@ -112,12 +113,14 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:animateLayoutChanges="true"
+        android:layout_marginStart="16dp"
         android:visibility="invisible"
         app:cardBackgroundColor="#2196F3"
         app:cardCornerRadius="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/rescanCard"
-        app:layout_constraintTop_toTopOf="@id/rescanCard">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
             android:id="@+id/registerButton"
