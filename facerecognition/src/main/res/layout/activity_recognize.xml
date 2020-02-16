@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text="12435.543241, 23123.5346346"
+                android:text="..."
                 app:layout_constraintTop_toBottomOf="@id/results" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>

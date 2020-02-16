@@ -59,6 +59,7 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
 
     private int faceState=IDLE;
 
+    String loc;
 
     private Mat                    mRgba;
     private Mat                    mGray;
@@ -212,6 +213,7 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
                     showSecButton();
                 }
                 loading.setVisibility(View.GONE);
+                showLoc();
             }
         };
 
@@ -257,6 +259,13 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
 //        });
     }
 
+    private void showLoc() {
+
+        loc = getIntent().getStringExtra("loc");
+        final TextView locText = (TextView) findViewById(R.id.location);
+        locText.setText(loc);
+    }
+
     private void showSecButton() {
 
         CardView rescanCard = (CardView) findViewById(R.id.rescanCard);
@@ -264,7 +273,6 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
         Button registerButton = (Button) findViewById(R.id.registerButton);
         CardView registerCard = (CardView) findViewById(R.id.registerCard);
         final ProgressBar loading = (ProgressBar) findViewById(R.id.loadingBar);
-
 
         rescanCard.setVisibility(View.VISIBLE);
         rescanButton.setVisibility(View.VISIBLE);

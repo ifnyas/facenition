@@ -1,22 +1,55 @@
 package cultoftheunicorn.marvel;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.opencv.cultoftheunicorn.marvel.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
+
+    private TextView loc;
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loc = (TextView) findViewById(R.id.loc);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (locationManager != null) {
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (location != null) {
+                onLocationChanged(location);
+            } else {
+                new AlertDialog.Builder(this)
+                        .setMessage("Please enable your GPS")
+                        .setPositiveButton("Go to Settings", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .show();
+            }
+        }
 
         final FloatingActionButton recognizeButton = (FloatingActionButton) findViewById(R.id.recognizeButton);
         final FloatingActionButton loginButton = (FloatingActionButton) findViewById(R.id.loginButton);
@@ -37,7 +70,9 @@ public class MainActivity extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        startActivity(new Intent(MainActivity.this, Recognize.class));
+                        Intent intent = new Intent(MainActivity.this, Recognize.class);
+                        intent.putExtra("loc", loc.getText());
+                        startActivity(intent);
                         finish();
                     }
                 }, 1000);
@@ -60,14 +95,43 @@ public class MainActivity extends AppCompatActivity {
         trainingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, NameActivity.class));
+                Intent intent = new Intent(MainActivity.this, NameActivity.class);
+                startActivity(intent);
             }
         });
     }
 
     @Override
     public void onBackPressed() {
-        //TODO: create exit dialog
-        super.onBackPressed(); // optional depending on your needs
+        new AlertDialog.Builder(this)
+                .setMessage("Close Apps?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double longitude = location.getLongitude();
+        double latitude = location.getLatitude();
+        loc.setText("( Lat: " + latitude + ", " + "Long: " + longitude + " )");
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
     }
 }

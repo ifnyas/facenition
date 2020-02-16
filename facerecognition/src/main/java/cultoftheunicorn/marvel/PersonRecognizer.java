@@ -14,7 +14,6 @@ import org.opencv.core.Mat;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.util.Locale;
 
 import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_8U;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImage;
@@ -147,7 +146,8 @@ public  class PersonRecognizer {
 			mProb=-1;
         if ((n[0] != -1) && (p[0] < 50))
 			//if (n[0] != -1)
-			return String.format(Locale.getDefault(), "Label:%s, confidence: %d)", labelsFile.get(n[0]), mProb);
+//			return String.format(Locale.getDefault(), "Label:%s, confidence: %d)", labelsFile.get(n[0]), mProb);
+			return labelsFile.get(n[0]);
 		else
 			return "Unknown";
 	}
