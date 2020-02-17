@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -185,19 +184,11 @@ public class Training extends AppCompatActivity implements CameraBridgeViewBase.
         mOpenCvCameraView.setCvCameraViewListener(this);
 
         mOpenCvCameraView.setCamFront();
-//        mOpenCvCameraView.setMaxFrameSize(
-//                getResources().getDisplayMetrics().heightPixels,
-//                getResources().getDisplayMetrics().widthPixels);
-
-//        mOpenCvCameraView.setResolution(
-//                getResources().getDisplayMetrics().heightPixels,
-//                getResources().getDisplayMetrics().widthPixels
-//        );
 
         //mPath=getFilesDir()+"/facerecogOCV/";
-        mPath = Environment.getExternalStorageDirectory()+"/facerecogOCV/";
+        mPath = this.getApplicationInfo().dataDir + "/.rec/";
 
-        Log.e("Path", mPath);
+        Log.d("Path", mPath);
 
         labelsFile= new Labels(mPath);
 

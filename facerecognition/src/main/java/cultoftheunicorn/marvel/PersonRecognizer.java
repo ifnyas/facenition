@@ -133,9 +133,8 @@ public  class PersonRecognizer {
 		if (labelsFile.max() == 0)
 			return "Please register sample faces first";
 
-		if (labelsFile.max() == 1) {
-			return "Face not Registered";
-		}
+		if (labelsFile.max() == 1)
+			return "Face not registered";
 
 		int[] n = new int[1];
 		double[] p = new double[1];

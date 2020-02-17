@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -191,9 +190,9 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
         mOpenCvCameraView.setCamFront();
 
         //mPath=getFilesDir()+"/facerecogOCV/";
-        mPath = Environment.getExternalStorageDirectory()+"/facerecogOCV/";
+        mPath = this.getApplicationInfo().dataDir + "/.rec/";
 
-        Log.e("Path", mPath);
+        Log.d("Path", mPath);
 
         labelsFile= new Labels(mPath);
 
@@ -216,6 +215,9 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
                     results.setText(tempName);
                     scan.setChecked(false);
                     showLoc(1);
+                    if (tempName.equals("Face not registered")) {
+                        showLoc(2);
+                    }
                 } else {
                     results.setText("Face not registered");
                     showLoc(2);
@@ -232,10 +234,14 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b) {
                     if(!fr.canPredict()) {
+                        results.setText("Face not registered");
+                        showLoc(2);
                         scan.setChecked(false);
+                        loading.setVisibility(View.GONE);
                         return;
                     }
                     faceState = SEARCHING;
+                    loading.setVisibility(View.VISIBLE);
                 }
                 else {
                     faceState = IDLE;
@@ -302,7 +308,6 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
             public void onClick(View view) {
                 scan.setChecked(true);
                 faceState = SEARCHING;
-                loading.setVisibility(View.VISIBLE);
             }
         });
 
