@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <cultoftheunicorn.marvel.Tutorial3View
+    <wgnelther.faces.FaceCameraView
         android:id="@+id/tutorial3_activity_java_surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

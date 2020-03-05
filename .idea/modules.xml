@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/eltherfaces.iml" filepath="$PROJECT_DIR$/eltherfaces.iml" group="eltherfaces" />
+      <module fileurl="file://$PROJECT_DIR$/facerecognition/eltherfaces-facerecognition.iml" filepath="$PROJECT_DIR$/facerecognition/eltherfaces-facerecognition.iml" group="eltherfaces/facerecognition" />
       <module fileurl="file://$PROJECT_DIR$/facerecognition/facerecognition.iml" filepath="$PROJECT_DIR$/facerecognition/facerecognition.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facesdk/facesdk.iml" filepath="$PROJECT_DIR$/facesdk/facesdk.iml" group="eltherfaces/facesdk" />
       <module fileurl="file://$PROJECT_DIR$/marvel2.iml" filepath="$PROJECT_DIR$/marvel2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/openCVLibrary2410/openCVLibrary2410.iml" filepath="$PROJECT_DIR$/openCVLibrary2410/openCVLibrary2410.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facesdk/openCVLibrary2410.iml" filepath="$PROJECT_DIR$/facesdk/openCVLibrary2410.iml" />
     </modules>
   </component>
 </project>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.opencv.cultoftheunicorn.marvel"
+    package="org.opencv.wgnelther.faces"
     android:versionCode="24"
     android:versionName="2.4">
 
@@ -39,7 +39,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="cultoftheunicorn.marvel.Splash"
+            android:name="wgnelther.faces.Splash"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,23 +49,19 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="cultoftheunicorn.marvel.MainActivity"></activity>
+        <activity android:name="wgnelther.faces.MainActivity"></activity>
 
         <activity
-            android:name="cultoftheunicorn.marvel.Recognize"
+            android:name="wgnelther.faces.Recognize"
             android:theme="@style/SplashTheme" />
 
         <activity
-            android:name="cultoftheunicorn.marvel.Training"
+            android:name="wgnelther.faces.Training"
             android:theme="@style/SplashTheme" />
 
         <activity
-            android:name="cultoftheunicorn.marvel.NameActivity"
+            android:name="wgnelther.faces.NameActivity"
             android:windowSoftInputMode="adjustNothing" />
-
-        <activity
-            android:name="cultoftheunicorn.marvel.ReviewResults"
-            android:label="Review and Mark" />
     </application>
 
 </manifest>
