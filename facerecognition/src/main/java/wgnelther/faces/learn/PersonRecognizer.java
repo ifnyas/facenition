@@ -1,4 +1,4 @@
-package wgnelther.faces;
+package wgnelther.faces.learn;
 
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -34,7 +34,6 @@ public  class PersonRecognizer {
 
 	PersonRecognizer(String path) {
 		faceRecognizer =  com.googlecode.javacv.cpp.opencv_contrib.createLBPHFaceRecognizer(2,8,8,8,200);
-		// path=Environment.getExternalStorageDirectory()+"/facerecog/faces/";
 		mPath=path;
 		labelsFile= new Labels(mPath);
 
@@ -134,7 +133,7 @@ public  class PersonRecognizer {
 			return "Please register sample faces first";
 
 		if (labelsFile.max() == 1)
-			return "Face not registered";
+			return "Wajah kamu belum pernah terdaftar sebelumnya";
 
 		int[] n = new int[1];
 		double[] p = new double[1];
@@ -152,7 +151,7 @@ public  class PersonRecognizer {
 			//return String.format(Locale.getDefault(), "Label:%s, confidence: %d)", labelsFile.get(n[0]), mProb);
 			return labelsFile.get(n[0]);
 		else
-			return "Unknown";
+			return "Ups, sepertinya kami menemukan masalah dalam membaca wajah kamu. Kami menyarankan untuk mendaftarkan kembali wajah kamu.";
 	}
 
 

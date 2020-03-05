@@ -6,7 +6,7 @@
     android:animateLayoutChanges="true"
     android:background="@color/colorAccent">
 
-    <wgnelther.faces.FaceCameraView
+    <wgnelther.faces.learn.FaceCameraView
         android:id="@+id/tutorial3_activity_java_surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center"
-        android:text="Register"
+        android:text="Daftar"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/white"
         android:textStyle="bold"
@@ -103,7 +103,7 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Yes"
+                android:text="Ya"
                 android:textColor="@color/colorAccent"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toStartOf="@id/no"
@@ -116,7 +116,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:text="No"
+                android:text="Tidak"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toStartOf="@id/imagePreview"
                 app:layout_constraintStart_toEndOf="@id/yes"

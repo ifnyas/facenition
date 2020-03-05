@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:text="Register Account"
+        android:text="Daftar Akun"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/lightBlack" />
 
@@ -36,7 +36,7 @@
         android:paddingStart="40dp"
         android:paddingTop="16dp"
         android:paddingEnd="40dp"
-        android:text="Please enter your name and click next button to scan your faces."
+        android:text="Masukkan Nama Anda dan klik lanjut untuk me-scan wajah Anda."
         android:textAlignment="center" />
 
     <EditText
@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/colorAccent"
-        android:text="NEXT"
+        android:text="LANJUT"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/white"
         android:textStyle="bold" />

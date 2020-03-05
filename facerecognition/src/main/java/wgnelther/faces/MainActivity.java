@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import org.opencv.wgnelther.faces.R;
 
+import wgnelther.faces.learn.Recognize;
+
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private TextView loc;

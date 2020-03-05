@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <wgnelther.faces.FaceCameraView
+    <wgnelther.faces.learn.FaceCameraView
         android:id="@+id/tutorial3_activity_java_surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center"
-        android:text="Sign In"
+        android:text="Masuk"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/white"
         android:textStyle="bold"
@@ -132,7 +132,7 @@
             android:gravity="fill"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
-            android:text="Register"
+            android:text="Daftar"
             android:textColor="@color/white" />
     </android.support.v7.widget.CardView>
 </android.support.constraint.ConstraintLayout>

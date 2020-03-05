@@ -1,4 +1,4 @@
-package wgnelther.faces;
+package wgnelther.faces.learn;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class FaceCameraView extends JavaCameraView {
 
-    private static final String TAG = "Sample::FaceCameraView";
+    private static final String TAG = "FaceCameraView";
 
     public FaceCameraView(Context context, AttributeSet attrs) {
         super(context, attrs);

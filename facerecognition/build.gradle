@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "25.0.3"
+    //buildToolsVersion "x.y.z"
 
     defaultConfig {
         applicationId "wgn.elther.faces"

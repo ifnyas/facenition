@@ -1,4 +1,4 @@
-package wgnelther.faces;
+package wgnelther.faces.learn;
 
 import android.util.Log;
 

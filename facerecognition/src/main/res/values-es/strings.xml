@@ -9,7 +9,7 @@
     <string name="SEnter">Escriba nombre,luego pulse Rec</string>
     <string name="SStopTrain">Parar entreno</string>
     <string name="SStopSearch">Parar búsqueda</string>
-    <string name="Straininig">Entrenando...</string>
+    <string name="Straining">Entrenando...</string>
  	<string name="SCanntoPredic">Se necesita más de una cara para buscar</string>
  	<string name="SIdle">Pausa</string>
     <string name="SFaceName">Nombre:</string>

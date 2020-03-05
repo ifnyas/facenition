@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Marvel</string>
+    <string name="app_name">PNM Digi Demo</string>
     <string name="BLANK"></string>
     <string name="STrain">Train</string>
     <string name="SViewAll">View all faces</string>
@@ -9,7 +9,7 @@
     <string name="SEnter">Enter face name, then pres Rec</string>
     <string name="SStopTrain">Stop Training</string>
     <string name="SStopSearch">Stop Search</string>
-    <string name="Straininig">Training...</string>
+    <string name="Straining">Training...</string>
     <string name="SCanntoPredic">More than one face is needed to predict</string>
     <string name="SIdle">Idle</string>
     <string name="SFaceName">Face name:</string>

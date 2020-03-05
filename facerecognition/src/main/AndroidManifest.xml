@@ -52,11 +52,11 @@
         <activity android:name="wgnelther.faces.MainActivity"></activity>
 
         <activity
-            android:name="wgnelther.faces.Recognize"
+            android:name="wgnelther.faces.learn.Recognize"
             android:theme="@style/SplashTheme" />
 
         <activity
-            android:name="wgnelther.faces.Training"
+            android:name="wgnelther.faces.learn.Training"
             android:theme="@style/SplashTheme" />
 
         <activity

@@ -1,13 +1,13 @@
-package wgnelther.faces;
+package wgnelther.faces.learn;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -38,20 +39,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-public class Recognize extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+import wgnelther.faces.MainActivity;
 
-    private static final String    TAG                 = "OCVSample::Activity";
+public class Training extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+
+    private static final String TAG = "Training";
     private static final Scalar FACE_RECT_COLOR     = new Scalar(0, 255, 0, 255);
     public static final int        JAVA_DETECTOR       = 0;
     public static final int        NATIVE_DETECTOR     = 1;
 
-    public static final int SEARCHING= 1;
+    public static final int TRAINING= 0;
     public static final int IDLE= 2;
 
     private static final int frontCam =1;
@@ -59,8 +57,6 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
 
 
     private int faceState=IDLE;
-
-    String loc;
 
     private Mat                    mRgba;
     private Mat                    mGray;
@@ -78,30 +74,30 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
 
     private FaceCameraView mOpenCvCameraView;
 
+    String text;
     private ImageView Iv;
     Bitmap mBitmap;
     Handler mHandler;
 
     PersonRecognizer fr;
-    ToggleButton scan;
-
-    Set<String> uniqueNames = new HashSet<String>();
-
-    // max number of people to detect in a session
-    String[] uniqueNamesArray = new String[10];
+    ToggleButton capture;
 
     static final long MAXIMG = 10;
+
+    int countImages=0;
 
     Labels labelsFile;
     static {
         OpenCVLoader.initDebug();
-        //System.load("C:\\Program Files\\My Great Program\\libs\\opencv_java.so");
-        String libPath = System.getProperty("java.library.path");
-        System.out.println("java.library.path=" + libPath);
-        String libraryName = "opencv_java";
-        System.out.println("Trying to load '" + libraryName + "'");
-        System.loadLibrary(libraryName);
-        //System.loadLibrary("opencv_java");
+        System.loadLibrary("opencv_java");
+    }
+
+    public Training() {
+        mDetectorName = new String[2];
+        mDetectorName[JAVA_DETECTOR] = "Java";
+        mDetectorName[NATIVE_DETECTOR] = "Native (tracking)";
+
+        Log.i(TAG, "Instantiated new " + this.getClass());
     }
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -113,7 +109,7 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
                     Log.i(TAG, "OpenCV loaded successfully");
 
                     fr=new PersonRecognizer(mPath);
-                    String s = getResources().getString(R.string.Straininig);
+                    String s = getResources().getString(R.string.Straining);
                     //Toast.makeText(getApplicationContext(),s, Toast.LENGTH_LONG).show();
                     fr.load();
 
@@ -159,34 +155,36 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
         }
     };
 
-    public Recognize() {
-        mDetectorName = new String[2];
-        mDetectorName[JAVA_DETECTOR] = "Java";
-        mDetectorName[NATIVE_DETECTOR] = "Native (tracking)";
-
-        Log.i(TAG, "Instantiated new " + this.getClass());
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recognize);
-
-        scan = (ToggleButton) findViewById(R.id.scan);
-        final TextView results = (TextView) findViewById(R.id.results);
-        final ProgressBar loading = (ProgressBar) findViewById(R.id.loadingBar);
+        setContentView(R.layout.activity_training);
 
         ImageButton backButton = (ImageButton) findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Recognize.this, MainActivity.class));
+                startActivity(new Intent(Training.this, MainActivity.class));
                 finish();
             }
         });
 
+        text = getIntent().getStringExtra("name");
+        Iv = (ImageView) findViewById(R.id.imagePreview);
+
+        capture = (ToggleButton) findViewById(R.id.capture);
+        capture.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                captureOnClick();
+            }
+        });
+
+        capture.setChecked(true);
+
         mOpenCvCameraView = (FaceCameraView) findViewById(R.id.tutorial3_activity_java_surface_view);
         mOpenCvCameraView.setCvCameraViewListener(this);
+
         mOpenCvCameraView.setCamFront();
 
         //mPath=getFilesDir()+"/facerecogOCV/";
@@ -199,124 +197,64 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                /*
-                    display a newline separated list of individual names
-                 */
-                String tempName = msg.obj.toString();
-                if (!(tempName.equals("Unknown"))) {
-                    tempName = capitalize(tempName);
-                    uniqueNames.add(tempName);
-                    uniqueNamesArray = uniqueNames.toArray(new String[uniqueNames.size()]);
-                    StringBuilder strBuilder = new StringBuilder();
-                    for (int i = 0; i < uniqueNamesArray.length; i++) {
-                        strBuilder.append(uniqueNamesArray[i] + "\n");
+                if (msg.obj=="IMG")
+                {
+                    Canvas canvas = new Canvas();
+                    canvas.setBitmap(mBitmap);
+                    Iv.setImageBitmap(mBitmap);
+                    if (countImages>=MAXIMG-1)
+                    {
+                        capture.setChecked(false);
+                        captureOnClick();
                     }
-                    String textToDisplay = strBuilder.toString();
-                    results.setText(tempName);
-                    scan.setChecked(false);
-                    showLoc(1);
-                    if (tempName.equals("Face not registered")) {
-                        showLoc(2);
-                    }
-                } else {
-                    results.setText("Face not registered");
-                    showLoc(2);
-                    scan.setChecked(false);
                 }
             }
         };
 
-        scan.setChecked(true);
-        faceState = SEARCHING;
-
-        scan.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b) {
-                    if(!fr.canPredict()) {
-                        results.setText("Face not registered");
-                        showLoc(2);
-                        scan.setChecked(false);
-                        loading.setVisibility(View.GONE);
-                        return;
-                    }
-                    faceState = SEARCHING;
-                    loading.setVisibility(View.VISIBLE);
-                }
-                else {
-                    faceState = IDLE;
-                    loading.setVisibility(View.GONE);
-                    showSecButton();
-                }
-            }
-        });
-
         boolean success=(new File(mPath)).mkdirs();
+
         if (!success)
-        {
             Log.e("Error","Error creating directory");
-        }
 
-//        Button submit = (Button) findViewById(R.id.submit);
-//        submit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(uniqueNames.size() > 0) {
-//                    Intent intent = new Intent(Recognize.this, ReviewResults.class);
-//                    intent.putExtra("list", uniqueNamesArray);
-//                    startActivity(intent);
-//                }
-//                else {
-//                    Toast.makeText(Recognize.this, "Empty list cannot be sent further", Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
     }
 
-    private void showLoc(int status) {
+    void captureOnClick()
+    {
+        if (capture.isChecked())
+            faceState = TRAINING;
+        else {
+            final ProgressBar loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+            loadingBar.setVisibility(View.INVISIBLE);
 
-        loc = getIntent().getStringExtra("loc");
-        final TextView locText = (TextView) findViewById(R.id.location);
+            final TextView label = (TextView) findViewById(R.id.label);
+            label.setText("Apakah ini kamu?");
+            countImages = 0;
+            faceState = IDLE;
 
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date date = new Date();
-        String dateformatted = dateFormat.format(date);
+            final Button yesButton = (Button) findViewById(R.id.yes);
+            yesButton.setVisibility(View.VISIBLE);
+            yesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(Training.this, "Wajah kamu sudah terdaftar.\nSekarang kamu sudah bisa presensi melalui scan wajah.", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(Training.this, MainActivity.class));
+                    finish();
+                }
+            });
 
-        if (status == 1) {
-            locText.setText("Attendance Success!\n" + loc + "\nTime: " + dateformatted);
-        } else {
-            locText.setText("Attendance Failed");
+            final Button noButton = (Button) findViewById(R.id.no);
+            noButton.setVisibility(View.VISIBLE);
+            noButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    yesButton.setVisibility(View.INVISIBLE);
+                    noButton.setVisibility(View.INVISIBLE);
+                    loadingBar.setVisibility(View.VISIBLE);
+                    label.setText("Scanning...");
+                    capture.setChecked(true);
+                }
+            });
         }
-    }
-
-    private void showSecButton() {
-
-        CardView rescanCard = (CardView) findViewById(R.id.rescanCard);
-        Button rescanButton = (Button) findViewById(R.id.rescan);
-        Button registerButton = (Button) findViewById(R.id.registerButton);
-        CardView registerCard = (CardView) findViewById(R.id.registerCard);
-        final ProgressBar loading = (ProgressBar) findViewById(R.id.loadingBar);
-
-        rescanCard.setVisibility(View.VISIBLE);
-        rescanButton.setVisibility(View.VISIBLE);
-
-        registerCard.setVisibility(View.VISIBLE);
-        registerButton.setVisibility(View.VISIBLE);
-
-        rescanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                scan.setChecked(true);
-                faceState = SEARCHING;
-            }
-        });
-
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(Recognize.this, NameActivity.class));
-            }
-        });
     }
 
     @Override
@@ -333,9 +271,9 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
 
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
-
 
         if (mAbsoluteFaceSize == 0) {
             int height = mGray.rows();
@@ -369,26 +307,27 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
 
         Rect[] facesArray = faces.toArray();
 
-        if ((facesArray.length>0) && (faceState==SEARCHING))
+        if ((facesArray.length==1)&&(faceState==TRAINING)&&(countImages<MAXIMG)&&(!text.equals("")))
         {
-            Mat m = new Mat();
-            m=mGray.submat(facesArray[0]);
+            Mat m;
+            Rect r=facesArray[0];
+
+            m=mRgba.submat(r);
             mBitmap = Bitmap.createBitmap(m.width(),m.height(), Bitmap.Config.ARGB_8888);
 
-
             Utils.matToBitmap(m, mBitmap);
+
             Message msg = new Message();
             String textTochange = "IMG";
             msg.obj = textTochange;
-            //mHandler.sendMessage(msg);
-
-            textTochange = fr.predict(m);
-            mLikely=fr.getProb();
-            msg = new Message();
-            msg.obj = textTochange;
             mHandler.sendMessage(msg);
-        }
+            if (countImages<MAXIMG)
+            {
+                fr.add(m, text);
+                countImages++;
+            }
 
+        }
         for (int i = 0; i < facesArray.length; i++)
             Core.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
 
@@ -416,12 +355,7 @@ public class Recognize extends AppCompatActivity implements CameraBridgeViewBase
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(Recognize.this, MainActivity.class));
-        super.onBackPressed(); // optional depending on your needs
-    }
-
-    //    because capitalize is the new black
-    private String capitalize(final String line) {
-        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
+        startActivity(new Intent(Training.this, MainActivity.class));
+        super.onBackPressed();
     }
 }
